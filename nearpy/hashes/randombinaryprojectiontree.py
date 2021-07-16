@@ -107,14 +107,16 @@ class RandomBinaryProjectionTreeNode(object):
             if self.childs[hash_char].vector_count < N:
                 # If not combine buckets of both child subtrees
                 listA = self.childs[hash_char].collect_all_bucket_keys()
-                listB = self.childs[other_hash_char].collect_all_bucket_keys()
+                listB = self.childs[other_hash_char].collect_all_bucket_keys() if other_hash_char in self.childs else []
                 return listA + listB
             else:
                 # Child subtree has enough results, so call method on child
                 return self.childs[hash_char].bucket_keys_to_guarantee_result_set_size(bucket_key, N, tree_depth+1)
-        else:
+        elif other_hash_char in self.childs:
             # That subtree is not existing, so just follow the other side
             return self.childs[other_hash_char].bucket_keys_to_guarantee_result_set_size(bucket_key, N, tree_depth+1)
+        else:
+            return []
 
 
 class RandomBinaryProjectionTree(LSHash):
